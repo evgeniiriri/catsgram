@@ -1,10 +1,13 @@
 package ru.yandex.practicum.catsgram.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import ru.yandex.practicum.catsgram.CatsgramApplication;
+import ru.yandex.practicum.catsgram.config.CatsgramConfig;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.model.Image;
 import ru.yandex.practicum.catsgram.model.Post;
@@ -24,10 +27,14 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private final Map<Long, Image> images = new HashMap<>();
-
-    @Value("@{catsrgam.imageDirectory}")
     private final String imageDirectory;
     private final PostService postService;
+
+    @Autowired
+    public ImageService(CatsgramConfig config, PostService postService) {
+        this.postService = postService;
+        this.imageDirectory = config.getImageDirectory();
+    }
 
     public List<Image> saveImages(Long postId, List<MultipartFile> files) {
         return files.stream().map(file -> saveImage(postId, file)).collect(Collectors.toList());
