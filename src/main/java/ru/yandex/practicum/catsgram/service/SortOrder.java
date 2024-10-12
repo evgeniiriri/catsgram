@@ -11,7 +11,8 @@ public enum SortOrder {
             case "descending":
             case "desc":
                 return DESCENDING;
-            default: return null;
+            default:
+                return null;
         }
     }
 }

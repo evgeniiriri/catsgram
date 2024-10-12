@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 public class CatsgramAdvice {
 
     @ExceptionHandler(ParameterNotValidException.class)
-    public ResponseEntity<ErrorMessage> ParameterNotValidExceptionHandler(ParameterNotValidException e) {
+    public ResponseEntity<ErrorMessage> parameterNotValidExceptionHandler(ParameterNotValidException e) {
         return new ResponseEntity<>(new ErrorMessage(
                 "reason - " + e.getReason() + " parameter - " + e.getParameter(),
                 LocalDateTime.now(), HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConditionsNotMetException.class)
-    public ResponseEntity<ErrorMessage> ConditionsNotMetExceptionHandler(ConditionsNotMetException e) {
+    public ResponseEntity<ErrorMessage> conditionsNotMetExceptionHandler(ConditionsNotMetException e) {
         return new ResponseEntity<>(new ErrorMessage(e.getMessage(), LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 

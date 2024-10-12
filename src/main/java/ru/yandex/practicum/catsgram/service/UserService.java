@@ -1,20 +1,34 @@
 package ru.yandex.practicum.catsgram.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.catsgram.dal.UserRepository;
+import ru.yandex.practicum.catsgram.dto.UserDto;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.DuplicatedDataException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
+import ru.yandex.practicum.catsgram.mapper.UserMapper;
 import ru.yandex.practicum.catsgram.model.User;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final Map<Long, User> users = new HashMap<>();
 
-    public Collection<User> findAll() {
-        return users.values();
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public List<UserDto> findAll() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::mapToUserDto)
+                .collect(Collectors.toList());
     }
 
     public Optional<User> findById(Long id) {
@@ -51,7 +65,7 @@ public class UserService {
         }
         if (users.containsKey(newUser.getId())) {
             User oldUser = users.get(newUser.getId());
-            if(oldUser.getEmail().equals(newUser.getEmail())) {
+            if (oldUser.getEmail().equals(newUser.getEmail())) {
                 throw new DuplicatedDataException("Этот имейл уже используется");
             }
             oldUser.setEmail(newUser.getEmail());
