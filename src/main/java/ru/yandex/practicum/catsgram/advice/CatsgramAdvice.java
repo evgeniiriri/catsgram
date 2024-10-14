@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.yandex.practicum.catsgram.exception.CatsgramInternalServerException;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.DuplicatedDataException;
 import ru.yandex.practicum.catsgram.exception.ParameterNotValidException;
@@ -18,6 +19,12 @@ public class CatsgramAdvice {
         return new ResponseEntity<>(new ErrorMessage(
                 "reason - " + e.getReason() + " parameter - " + e.getParameter(),
                 LocalDateTime.now(), HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CatsgramInternalServerException.class)
+    public ResponseEntity<ErrorMessage> catsgramInternalServerExceptionHandler(CatsgramInternalServerException e) {
+        return new ResponseEntity<>(new ErrorMessage(e.getMessage(), LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ConditionsNotMetException.class)
