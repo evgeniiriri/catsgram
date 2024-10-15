@@ -31,13 +31,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<User> findById(Long id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-        return users.values().stream()
-                .filter(user -> Objects.equals(user.getId(), id))
-                .findFirst();
+    public UserDto findById(Long id) {
+        return userRepository.findUserById(id)
+                .map(UserMapper::mapToUserDto)
+                .orElseThrow(() -> new NotFoundException("User with ID - " + id + " not found."));
     }
 
     public User create(User user) {
